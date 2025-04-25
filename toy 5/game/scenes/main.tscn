@@ -1,0 +1,149 @@
+[gd_scene load_steps=10 format=3 uid="uid://clmrhe5we7ygs"]
+
+[ext_resource type="Script" path="res://game/scripts/main.gd" id="1_elald"]
+[ext_resource type="PackedScene" uid="uid://dci5gt6y02fdw" path="res://game/scenes/player.tscn" id="1_icjvr"]
+[ext_resource type="VideoStream" path="res://game/assets/background.ogv" id="2_6h2th"]
+[ext_resource type="Texture2D" uid="uid://cjb7xxbqthuoi" path="res://game/assets/heart.png" id="4_1cu3d"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2qyvu"]
+size = Vector2(576, 10)
+
+[sub_resource type="LabelSettings" id="LabelSettings_pm4b2"]
+font_size = 28
+
+[sub_resource type="LabelSettings" id="LabelSettings_xytq2"]
+line_spacing = 0.0
+font_size = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r5rg8"]
+bg_color = Color(0.0726321, 0.726868, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2qydt"]
+bg_color = Color(1, 0, 0, 1)
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_elald")
+
+[node name="background" type="VideoStreamPlayer" parent="."]
+offset_right = 4608.0
+offset_bottom = 2592.0
+scale = Vector2(0.125, 0.125)
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stream = ExtResource("2_6h2th")
+autoplay = true
+expand = true
+loop = true
+
+[node name="Player" parent="." instance=ExtResource("1_icjvr")]
+position = Vector2(288, 280)
+
+[node name="asteroid container" type="Node2D" parent="."]
+
+[node name="exit collider" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="exit collider"]
+position = Vector2(288, 369)
+shape = SubResource("RectangleShape2D_2qyvu")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.814
+autostart = true
+
+[node name="lives" type="HBoxContainer" parent="."]
+offset_left = 3.0
+offset_top = 3.0
+offset_right = 6499.0
+offset_bottom = 2051.0
+scale = Vector2(0.01, 0.01)
+theme_override_constants/separation = 100
+
+[node name="TextureRect" type="TextureRect" parent="lives"]
+layout_mode = 2
+texture = ExtResource("4_1cu3d")
+
+[node name="TextureRect2" type="TextureRect" parent="lives"]
+layout_mode = 2
+texture = ExtResource("4_1cu3d")
+
+[node name="TextureRect3" type="TextureRect" parent="lives"]
+layout_mode = 2
+texture = ExtResource("4_1cu3d")
+
+[node name="starting text" type="VBoxContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 288.0
+offset_top = 162.0
+offset_right = 288.0
+offset_bottom = 162.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="title" type="Label" parent="starting text"]
+layout_mode = 2
+text = "Spacegame V2"
+label_settings = SubResource("LabelSettings_pm4b2")
+horizontal_alignment = 1
+
+[node name="creator" type="Label" parent="starting text"]
+layout_mode = 2
+text = "By Jacob Kranz"
+horizontal_alignment = 1
+
+[node name="description" type="Label" parent="starting text"]
+layout_mode = 2
+text = "Version 1 was made using pygame, 
+version 2 remade with Godot"
+label_settings = SubResource("LabelSettings_xytq2")
+horizontal_alignment = 1
+
+[node name="green panel" type="PanelContainer" parent="starting text"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_r5rg8")
+
+[node name="start button" type="Button" parent="starting text/green panel"]
+layout_mode = 2
+text = "BEGIN!"
+flat = true
+
+[node name="game over text" type="VBoxContainer" parent="."]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 288.0
+offset_top = 162.0
+offset_right = 288.0
+offset_bottom = 162.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="title" type="Label" parent="game over text"]
+layout_mode = 2
+text = "You Lose!"
+label_settings = SubResource("LabelSettings_pm4b2")
+horizontal_alignment = 1
+
+[node name="score" type="Label" parent="game over text"]
+layout_mode = 2
+text = "Your Score: "
+horizontal_alignment = 1
+
+[node name="red panel" type="PanelContainer" parent="game over text"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_2qydt")
+
+[node name="restart button" type="Button" parent="game over text/red panel"]
+layout_mode = 2
+text = "Restart
+"
+flat = true
+
+[connection signal="child_exiting_tree" from="asteroid container" to="." method="_on_asteroid_container_child_exiting_tree"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="button_up" from="starting text/green panel/start button" to="." method="_on_start_button_button_up"]
+[connection signal="button_up" from="game over text/red panel/restart button" to="." method="_on_restart_button_button_up"]
