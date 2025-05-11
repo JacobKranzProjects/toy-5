@@ -10,9 +10,11 @@ var score = 0
 func _ready() -> void:
 	lose()
 	$"game over text".hide()
+	pass
 
 func _process(delta: float) -> void:
 	pass
+
 
 func _on_timer_timeout() -> void:
 	var new = ASTEROID.instantiate()
@@ -29,11 +31,11 @@ func on_asteroid_collision(asteroid: Node2D, collision_with: Node2D):
 	else:
 		health -= 1
 		$lives.get_child(health).hide()
+		$crash.play(0.1)
 	if health <= 0: lose()
 
 
 func lose():
-	$background.paused = true
 	$Player.controllable = false
 	for child in $"asteroid container".get_children(): child.moving = false
 	$Timer.stop()
@@ -41,7 +43,7 @@ func lose():
 	$"game over text/score".text = "Your Score: " + str(score)
 
 func _on_start_button_button_up() -> void:
-	$background.paused = false
+	$background.speed_scale = 3
 	$Player.controllable = true
 	$Timer.start()
 	$"starting text".hide()
